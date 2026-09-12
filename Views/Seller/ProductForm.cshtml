@@ -1,0 +1,44 @@
+@model ProductFormViewModel
+@{
+    ViewData["Title"] = Model.Id == 0 ? "Add Product" : "Edit Product";
+}
+<h2>@ViewData["Title"]</h2>
+<form asp-action="@(Model.Id == 0 ? "CreateProduct" : "EditProduct")" method="post" class="col-md-6">
+    <input type="hidden" asp-for="Id" />
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label"></label>
+        <input asp-for="Name" class="form-control" />
+        <span asp-validation-for="Name" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label"></label>
+        <textarea asp-for="Description" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Description" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Price" class="form-label"></label>
+        <input asp-for="Price" class="form-control" />
+        <span asp-validation-for="Price" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="AvailableQuantity" class="form-label"></label>
+        <input asp-for="AvailableQuantity" class="form-control" />
+        <span asp-validation-for="AvailableQuantity" class="text-danger"></span>
+    </div>
+    <div class="mb-3">
+        <label asp-for="ImageUrl" class="form-label">Image URL</label>
+        <input asp-for="ImageUrl" class="form-control" placeholder="https://..." />
+    </div>
+    <div class="mb-3">
+        <label asp-for="CategoryId" class="form-label">Category</label>
+        <select asp-for="CategoryId" class="form-select">
+            @foreach (var c in Model.Categories)
+            {
+                <option value="@c.Id" selected="@(c.Id == Model.CategoryId)">@c.Name</option>
+            }
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+    <a asp-action="Products" class="btn btn-link">Cancel</a>
+</form>

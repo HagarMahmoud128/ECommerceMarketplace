@@ -1,0 +1,36 @@
+@model List<ApplicationUser>
+@{
+    ViewData["Title"] = "Users";
+    var roles = ViewBag.UserRoles as Dictionary<string, IList<string>>;
+}
+<h2>Users</h2>
+<table class="table align-middle">
+    <thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+        @foreach (var u in Model)
+        {
+            <tr>
+                <td>@u.FullName</td>
+                <td>@u.Email</td>
+                <td>@string.Join(", ", roles != null && roles.ContainsKey(u.Id) ? roles[u.Id] : new List<string>())</td>
+                <td>
+                    @if (u.IsSuspended)
+                    {
+                        <span class="badge bg-danger">Suspended</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                </td>
+                <td>
+                    <form asp-action="ToggleSuspend" asp-route-id="@u.Id" method="post">
+                        <button type="submit" class="btn btn-sm @(u.IsSuspended ? "btn-success" : "btn-warning")">
+                            @(u.IsSuspended ? "Activate" : "Suspend")
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>@ViewData["Title"] - Marketplace</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+            <div class="container">
+                <a class="navbar-brand" asp-controller="Home" asp-action="Index">🛒 Marketplace</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navMenu">
+                    <ul class="navbar-nav me-auto">
+                        <li class="nav-item"><a class="nav-link" asp-controller="Products" asp-action="Index">Products</a></li>
+
+                        @if (User.IsInRole("Customer"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Cart" asp-action="Index">Cart</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Orders" asp-action="Index">My Orders</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Wishlist" asp-action="Index">Wishlist</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Account" asp-action="RequestSeller">Become a Seller</a></li>
+                        }
+                        @if (User.IsInRole("Seller"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Seller" asp-action="Dashboard">Seller Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Seller" asp-action="Products">My Products</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Seller" asp-action="Orders">My Sales</a></li>
+                        }
+                        @if (User.IsInRole("Admin"))
+                        {
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Dashboard">Admin Dashboard</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Users">Users</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="SellerRequests">Seller Requests</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Products">Manage Products</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Categories">Categories</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Admin" asp-action="Orders">All Orders</a></li>
+                        }
+                    </ul>
+                    <partial name="_LoginPartial" />
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container">
+        @if (TempData["Message"] != null)
+        {
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                @TempData["Message"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                @TempData["Error"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+        <main role="main" class="pb-5">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted text-center py-3 mt-4">
+        <div class="container">&copy; 2026 - E-Commerce Marketplace Graduation Project</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <!-- Chatbot Floating Widget -->
+    <div id="chatbot-widget" style="position: fixed; bottom: 20px; right: 20px; z-index: 9999;">
+        <!-- Chat Icon Button -->
+        <button id="chat-toggle-btn" class="btn btn-primary rounded-circle shadow-lg" onclick="toggleChat()" style="width: 60px; height: 60px; font-size: 24px; display: flex; align-items: center; justify-content: center;">
+            💬
+        </button>
+
+        <!-- Chat Box Window -->
+        <div id="chat-window" class="card shadow-lg d-none" style="position: absolute; bottom: 70px; right: 0; width: 350px; height: 450px; border-radius: 15px;">
+            <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center" style="border-top-left-radius: 15px; border-top-right-radius: 15px;">
+                <strong class="mb-0"> MarketPlace Assistant</strong>
+                <button type="button" class="btn-close btn-close-white" onclick="toggleChat()"></button>
+            </div>
+            <div id="chatBox" class="card-body overflow-auto p-3" style="height: 330px; background-color: #f8f9fa;">
+                <div class="mb-2 text-start">
+                    <span class="bg-white border p-2 rounded d-inline-block small">Hello! How can I help you today?</span>
+                </div>
+            </div>
+            <div class="card-footer p-2 bg-white" style="border-bottom-left-radius: 15px; border-bottom-right-radius: 15px;">
+                <div class="input-group">
+                    <input type="text" id="userInput" class="form-control form-control-sm" placeholder="Ask anything..." onkeypress="handleKeyPress(event)" />
+                    <button class="btn btn-primary btn-sm" onclick="sendMessage()">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function toggleChat() {
+            const chatWindow = document.getElementById('chat-window');
+            chatWindow.classList.toggle('d-none');
+        }
+
+        function handleKeyPress(e) {
+            if (e.key === 'Enter') sendMessage();
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('userInput');
+            const message = input.value.trim();
+            if (!message) return;
+
+            const chatBox = document.getElementById('chatBox');
+
+            // Display User Message
+            chatBox.innerHTML += `<div class="mb-2 text-end"><span class="bg-primary text-white p-2 rounded d-inline-block small">${message}</span></div>`;
+            input.value = '';
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Loading Indicator
+            const loadingId = 'loading-' + Date.now();
+            chatBox.innerHTML += `<div id="${loadingId}" class="mb-2 text-start"><span class="text-muted small">Typing...</span></div>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const response = await fetch('@Url.Action("SendMessage", "Chat")', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const data = await response.json();
+                document.getElementById(loadingId)?.remove();
+
+                if (data.reply) {
+                    chatBox.innerHTML += `<div class="mb-2 text-start"><span class="bg-white border p-2 rounded d-inline-block small">${data.reply}</span></div>`;
+                } else {
+                    chatBox.innerHTML += `<div class="mb-2 text-start"><span class="bg-danger text-white p-2 rounded d-inline-block small">Error getting response.</span></div>`;
+                }
+            } catch (error) {
+                document.getElementById(loadingId)?.remove();
+                chatBox.innerHTML += `<div class="mb-2 text-start"><span class="bg-danger text-white p-2 rounded d-inline-block small">Connection error.</span></div>`;
+            }
+
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+@model List<Product>
+@{
+    ViewData["Title"] = "All Products";
+}
+<h2>All Products</h2>
+
+<table class="table align-middle">
+    <thead><tr><th>Name</th><th>Seller</th><th>Category</th><th>Price</th><th>Status</th><th></th></tr></thead>
+    <tbody>
+        @foreach (var p in Model)
+        {
+            <tr>
+                <td>@p.Name</td>
+                <td>@p.Seller?.FullName</td>
+                <td>@p.Category?.Name</td>
+                <td>@p.Price.ToString("C")</td>
+                <td>
+                    @if (p.IsRemovedByAdmin)
+                    {
+                        <span class="badge bg-danger">Removed</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                </td>
+                <td>
+                    @if (!p.IsRemovedByAdmin)
+                    {
+                        <form asp-action="RemoveProduct" asp-route-id="@p.Id" method="post" class="d-inline" onsubmit="return confirm('Remove this product? It will be hidden from customers.');">
+                            <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <form asp-action="RestoreProduct" asp-route-id="@p.Id" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-success">Restore</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

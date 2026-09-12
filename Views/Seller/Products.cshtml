@@ -1,0 +1,40 @@
+@model List<Product>
+@{
+    ViewData["Title"] = "My Products";
+}
+<h2>My Products</h2>
+<a asp-action="CreateProduct" class="btn btn-primary mb-3">+ Add Product</a>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">You haven't added any products yet.</p>
+}
+else
+{
+    <table class="table align-middle">
+        <thead><tr><th>Name</th><th>Category</th><th>Price</th><th>Quantity</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var p in Model)
+            {
+                <tr>
+                    <td>@p.Name</td>
+                    <td>@p.Category?.Name</td>
+                    <td>@p.Price.ToString("C")</td>
+                    <td style="width:180px;">
+                        <form asp-action="UpdateQuantity" method="post" class="d-flex gap-2">
+                            <input type="hidden" name="id" value="@p.Id" />
+                            <input type="number" name="quantity" value="@p.AvailableQuantity" min="0" class="form-control form-control-sm" />
+                            <button type="submit" class="btn btn-sm btn-outline-secondary">Set</button>
+                        </form>
+                    </td>
+                    <td>
+                        <a asp-action="EditProduct" asp-route-id="@p.Id" class="btn btn-sm btn-outline-primary">Edit</a>
+                        <form asp-action="DeleteProduct" asp-route-id="@p.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this product?');">
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

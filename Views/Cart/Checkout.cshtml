@@ -1,0 +1,13 @@
+@model CheckoutViewModel
+@{
+    ViewData["Title"] = "Checkout";
+}
+<h2>Checkout</h2>
+<form asp-action="PlaceOrder" method="post" class="col-md-6">
+    <div class="mb-3">
+        <label asp-for="ShippingAddress" class="form-label"></label>
+        <textarea asp-for="ShippingAddress" class="form-control" required></textarea>
+    </div>
+    <h4>Total: @Model.TotalPrice.ToString("C")</h4>
+    <button type="submit" class="btn btn-success">Place Order</button>
+</form>

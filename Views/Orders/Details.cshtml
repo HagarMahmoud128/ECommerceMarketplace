@@ -1,0 +1,35 @@
+@model Order
+@{
+    ViewData["Title"] = $"Order #{Model.Id}";
+}
+<h2>Order #@Model.Id</h2>
+<p>Date: @Model.OrderDate.ToShortDateString() | Status: <span class="badge bg-secondary">@Model.Status</span></p>
+<p>Shipping Address: @Model.ShippingAddress</p>
+
+<table class="table">
+    <thead><tr><th>Product</th><th>Seller</th><th>Qty</th><th>Unit Price</th><th>Subtotal</th><th>Status</th></tr></thead>
+    <tbody>
+        @foreach (var item in Model.OrderItems)
+        {
+            <tr>
+                <td>@item.Product?.Name</td>
+                <td>@item.Seller?.FullName</td>
+                <td>@item.Quantity</td>
+                <td>@item.UnitPrice.ToString("C")</td>
+                <td>@item.Subtotal.ToString("C")</td>
+                <td><span class="badge bg-info text-dark">@item.Status</span></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h4>Total: @Model.TotalPrice.ToString("C")</h4>
+
+@if (Model.Status == OrderStatus.Pending || Model.Status == OrderStatus.Confirmed)
+{
+    <form asp-action="Cancel" asp-route-id="@Model.Id" method="post" onsubmit="return confirm('Cancel this order?');">
+        <button type="submit" class="btn btn-danger">Cancel Order</button>
+    </form>
+}
+
+<a asp-action="Index" class="btn btn-link mt-3">&laquo; Back to My Orders</a>

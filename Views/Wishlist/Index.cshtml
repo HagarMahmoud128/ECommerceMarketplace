@@ -1,0 +1,27 @@
+@model List<WishlistItem>
+@{
+    ViewData["Title"] = "Wishlist";
+}
+<h2>My Wishlist</h2>
+<div class="row row-cols-1 row-cols-md-4 g-4">
+    @foreach (var item in Model)
+    {
+        <div class="col">
+            <div class="card h-100">
+                <img src="@(string.IsNullOrEmpty(item.Product!.ImageUrl) ? "https://placehold.co/300x200?text=Product" : item.Product.ImageUrl)" class="card-img-top" alt="@item.Product.Name" />
+                <div class="card-body">
+                    <h5 class="card-title">@item.Product.Name</h5>
+                    <p class="fw-bold">@item.Product.Price.ToString("C")</p>
+                    <a asp-controller="Products" asp-action="Details" asp-route-id="@item.Product.Id" class="btn btn-sm btn-outline-primary">View</a>
+                    <form asp-action="Remove" asp-route-id="@item.Id" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger">Remove</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+@if (!Model.Any())
+{
+    <p class="text-muted">Your wishlist is empty.</p>
+}

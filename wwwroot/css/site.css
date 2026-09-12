@@ -1,0 +1,21 @@
+body {
+    min-height: 100vh;
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+    background-color: #f0f0f0;
+}
+
+.navbar-brand {
+    font-weight: 600;
+}
+
+footer {
+    background-color: #f8f9fa;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}

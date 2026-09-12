@@ -1,0 +1,31 @@
+@model SellerRequest
+@{
+    ViewData["Title"] = "Become a Seller";
+}
+<h2>Become a Seller</h2>
+
+@if (Model != null)
+{
+    <div class="alert alert-info">
+        Your last request status: <strong>@Model.Status</strong> (submitted @Model.RequestDate.ToShortDateString())
+    </div>
+}
+
+@if (Model == null || Model.Status == SellerRequestStatus.Rejected)
+{
+    <form asp-action="RequestSeller" method="post" class="col-md-6">
+        <div class="mb-3">
+            <label class="form-label">Business Name (optional)</label>
+            <input name="businessName" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Request</button>
+    </form>
+}
+else if (Model.Status == SellerRequestStatus.Pending)
+{
+    <p class="text-muted">Your request is awaiting admin review.</p>
+}
+else if (Model.Status == SellerRequestStatus.Approved)
+{
+    <p class="text-success">You're an approved seller! Head to your <a asp-controller="Seller" asp-action="Dashboard">Seller Dashboard</a>.</p>
+}

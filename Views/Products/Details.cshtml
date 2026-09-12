@@ -1,0 +1,82 @@
+@model Product
+@{
+    ViewData["Title"] = Model.Name;
+}
+<div class="row">
+    <div class="col-md-5">
+        <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "https://placehold.co/500x400?text=Product" : Model.ImageUrl)" class="img-fluid rounded" alt="@Model.Name" />
+    </div>
+    <div class="col-md-7">
+        <h2>@Model.Name</h2>
+        <p class="text-muted">Category: @Model.Category?.Name | Sold by: @Model.Seller?.FullName</p>
+        <h4 class="text-primary">@Model.Price.ToString("C")</h4>
+        <p>@Model.Description</p>
+        <p>
+            @if (Model.AvailableQuantity > 0)
+            {
+                <span class="badge bg-success">In Stock (@Model.AvailableQuantity available)</span>
+            }
+            else
+            {
+                <span class="badge bg-danger">Out of Stock</span>
+            }
+        </p>
+        <p>⭐ @Model.AverageRating.ToString("0.0") average (@Model.Reviews.Count reviews)</p>
+
+        @if (User.IsInRole("Customer"))
+        {
+            <form asp-controller="Cart" asp-action="Add" method="post" class="d-flex align-items-center gap-2 mb-2">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <input type="number" name="quantity" value="1" min="1" max="@Model.AvailableQuantity" class="form-control" style="width: 90px;" />
+                <button type="submit" class="btn btn-primary" @(Model.AvailableQuantity == 0 ? "disabled" : "")>Add to Cart</button>
+            </form>
+            <form asp-controller="Wishlist" asp-action="Add" method="post">
+                <input type="hidden" name="productId" value="@Model.Id" />
+                <button type="submit" class="btn btn-outline-secondary">Add to Wishlist</button>
+            </form>
+        }
+        else if (User.Identity == null || !User.Identity.IsAuthenticated)
+        {
+            <a asp-controller="Account" asp-action="Login" class="btn btn-primary">Login to Purchase</a>
+        }
+    </div>
+</div>
+
+<hr />
+<h4>Reviews</h4>
+
+@if (ViewBag.CanReview == true)
+{
+    <form asp-controller="Products" asp-action="AddReview" method="post" class="mb-4 col-md-6">
+        <input type="hidden" name="ProductId" value="@Model.Id" />
+        <div class="mb-2">
+            <label class="form-label">Rating</label>
+            <select name="Rating" class="form-select">
+                <option value="5">5 - Excellent</option>
+                <option value="4">4 - Good</option>
+                <option value="3">3 - Average</option>
+                <option value="2">2 - Poor</option>
+                <option value="1">1 - Bad</option>
+            </select>
+        </div>
+        <div class="mb-2">
+            <label class="form-label">Comment</label>
+            <textarea name="Comment" class="form-control" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit Review</button>
+    </form>
+}
+
+@foreach (var review in Model.Reviews.OrderByDescending(r => r.CreatedDate))
+{
+    <div class="border-bottom py-2">
+        <strong>@review.User?.FullName</strong> - ⭐ @review.Rating
+        <p class="mb-1">@review.Comment</p>
+        <small class="text-muted">@review.CreatedDate.ToShortDateString()</small>
+    </div>
+}
+
+@if (!Model.Reviews.Any())
+{
+    <p class="text-muted">No reviews yet.</p>
+}

@@ -1,0 +1,46 @@
+@model List<OrderItem>
+@{
+    ViewData["Title"] = "My Sales";
+}
+<h2>Orders Containing My Products</h2>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No orders yet.</p>
+}
+else
+{
+    <table class="table align-middle">
+        <thead><tr><th>Order #</th><th>Product</th><th>Qty</th><th>Subtotal</th><th>Status</th><th>Update</th></tr></thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>#@item.OrderId</td>
+                    <td>@item.Product?.Name</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.Subtotal.ToString("C")</td>
+                    <td><span class="badge bg-info text-dark">@item.Status</span></td>
+                    <td style="width: 260px;">
+                        @if (item.Status != OrderStatus.Cancelled && item.Status != OrderStatus.Delivered)
+                        {
+                            <form asp-action="UpdateOrderStatus" method="post" class="d-flex gap-2">
+                                <input type="hidden" name="orderItemId" value="@item.Id" />
+                                <select name="status" class="form-select form-select-sm">
+                                    <option value="Confirmed" selected="@(item.Status == OrderStatus.Confirmed)">Confirmed</option>
+                                    <option value="Shipped" selected="@(item.Status == OrderStatus.Shipped)">Shipped</option>
+                                    <option value="Delivered">Delivered</option>
+                                </select>
+                                <button type="submit" class="btn btn-sm btn-primary">Update</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted small">No further action</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

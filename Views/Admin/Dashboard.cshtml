@@ -1,0 +1,51 @@
+@model AdminDashboardViewModel
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+<h2>Admin Dashboard</h2>
+<div class="row g-3">
+    <div class="col-md-2">
+        <div class="card p-3 text-center">
+            <h6 class="text-muted">Customers</h6>
+            <h3>@Model.TotalCustomers</h3>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card p-3 text-center">
+            <h6 class="text-muted">Sellers</h6>
+            <h3>@Model.TotalSellers</h3>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card p-3 text-center">
+            <h6 class="text-muted">Products</h6>
+            <h3>@Model.TotalProducts</h3>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card p-3 text-center">
+            <h6 class="text-muted">Orders</h6>
+            <h3>@Model.TotalOrders</h3>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card p-3 text-center">
+            <h6 class="text-muted">Pending Orders</h6>
+            <h3>@Model.PendingOrders</h3>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="card p-3 text-center">
+            <h6 class="text-muted">Seller Requests</h6>
+            <h3>@Model.PendingSellerRequests</h3>
+        </div>
+    </div>
+</div>
+
+<div class="mt-4 d-flex gap-2 flex-wrap">
+    <a asp-action="Users" class="btn btn-outline-primary">Manage Users</a>
+    <a asp-action="SellerRequests" class="btn btn-outline-primary">Seller Requests</a>
+    <a asp-action="Products" class="btn btn-outline-primary">Manage Products</a>
+    <a asp-action="Categories" class="btn btn-outline-primary">Manage Categories</a>
+    <a asp-action="Orders" class="btn btn-outline-primary">View All Orders</a>
+</div>

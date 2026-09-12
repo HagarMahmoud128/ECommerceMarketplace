@@ -1,0 +1,29 @@
+@model List<Order>
+@{
+    ViewData["Title"] = "All Orders";
+}
+<h2>All Orders</h2>
+
+@if (!Model.Any())
+{
+    <p class="text-muted">No orders placed yet.</p>
+}
+else
+{
+    <table class="table align-middle">
+        <thead><tr><th>Order #</th><th>Customer</th><th>Date</th><th>Status</th><th>Total</th><th></th></tr></thead>
+        <tbody>
+            @foreach (var o in Model)
+            {
+                <tr>
+                    <td>#@o.Id</td>
+                    <td>@o.Customer?.FullName</td>
+                    <td>@o.OrderDate.ToShortDateString()</td>
+                    <td><span class="badge bg-secondary">@o.Status</span></td>
+                    <td>@o.TotalPrice.ToString("C")</td>
+                    <td><a asp-action="OrderDetails" asp-route-id="@o.Id" class="btn btn-sm btn-outline-primary">View</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
