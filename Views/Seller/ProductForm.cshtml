@@ -23,7 +23,7 @@
     </div>
     <div class="mb-3">
         <label asp-for="AvailableQuantity" class="form-label"></label>
-        <input asp-for="AvailableQuantity" class="form-control" />
+        <input asp-for="AvailableQuantity" class="form-control" min="0"/>
         <span asp-validation-for="AvailableQuantity" class="text-danger"></span>
     </div>
     <div class="mb-3">
