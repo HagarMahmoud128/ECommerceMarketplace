@@ -12,7 +12,7 @@ namespace ECommerceMarketplace.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
+        //use usermanger and database
         public ProductsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
