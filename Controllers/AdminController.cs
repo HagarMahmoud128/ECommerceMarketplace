@@ -65,7 +65,6 @@ namespace ECommerceMarketplace.Controllers
             return RedirectToAction(nameof(Users));
         }
 
-        // ---------- Seller Requests ----------
         public async Task<IActionResult> SellerRequests()
         {
             var requests = await _context.SellerRequests
@@ -112,7 +111,6 @@ namespace ECommerceMarketplace.Controllers
             return RedirectToAction(nameof(SellerRequests));
         }
 
-        // ---------- Products ----------
         public async Task<IActionResult> Products()
         {
             var products = await _context.Products
@@ -154,7 +152,6 @@ namespace ECommerceMarketplace.Controllers
             return RedirectToAction(nameof(Products));
         }
 
-        // ---------- Categories ----------
         public async Task<IActionResult> Categories()
         {
             var categories = await _context.Categories.OrderBy(c => c.Name).ToListAsync();
@@ -221,7 +218,6 @@ namespace ECommerceMarketplace.Controllers
             return RedirectToAction(nameof(Categories));
         }
 
-        // ---------- Orders ----------
         public async Task<IActionResult> Orders()
         {
             var orders = await _context.Orders
